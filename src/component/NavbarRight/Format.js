@@ -20,6 +20,10 @@ class Format extends Component {
     if (this.props.navbar.isPrettierOpen) {
       content = this.handlePrettierDoc(content);
     }
+    const footReg = /\(<(http\S+?)> (".+?")\)/g;
+    content = content.replace(footReg, "($1 $2)");
+    content = content.replace(/([\u4e00-\u9fa5])\$/g, "$1 $");
+    content = content.replace(/\$([\u4e00-\u9fa5])/g, "$ $1");
     this.props.content.setContent(content);
     message.success("格式化完成！");
   };
@@ -33,7 +37,7 @@ class Format extends Component {
   };
 
   handleWechatOuterLink = (content) => {
-    const linkImgReg = /(!)*\[.*?\]\(((?!mp.weixin.qq.com).)*?\)/g;
+    const linkImgReg = /(!)*\[.*?\]\((((?!mp.weixin.qq.com).)*?[)]+?)\)/g;
     const res = content.match(linkImgReg); // 匹配到图片、链接和脚注
 
     if (res === null) {
@@ -54,11 +58,10 @@ class Format extends Component {
 
     if (filterRes.length > 0) {
       filterRes.forEach((val) => {
-        const linkReg = /\[(.*?)\]\((.*?)\)/; // 匹配链接中具体的值
+        const linkReg = /\[(.*?)\]\((\S+?[)]*)\)/; // 匹配链接中具体的值
         const matchValue = val.match(linkReg);
         const name = matchValue[1];
         const url = matchValue[2].trim();
-
         const newVal = `[${name}](${url} "${name}")`;
         content = content.replace(val, newVal);
       });
