@@ -37,7 +37,7 @@ class Format extends Component {
   };
 
   handleWechatOuterLink = (content) => {
-    const linkImgReg = /(!)*\[.*?\]\((((?!mp.weixin.qq.com).)*?[)]*?)\)/g;
+    const linkImgReg = /(!)*\[.*?\]\((((?!mp.weixin.qq.com).)*?[)]*)\)/g;
     const res = content.match(linkImgReg); // 匹配到图片、链接和脚注
 
     if (res === null) {
